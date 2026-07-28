@@ -1,0 +1,7 @@
+sistema,mutacao,estado,cypa,top_affinity_kcal_mol
+9BG5,KRAS G13D,ativo (GppNHp),Sim (tri-complexo),-10.59
+9BG9,KRAS WT,ativo (GppNHp),Sim (tri-complexo),-10.03
+4TQA_tri,KRAS G13D,inativo (GDP),Sim (CypA superposta),-7.436
+8BLR_tri,KRAS G13D,"inativo (GDP), switch-I aberto",Sim (CypA superposta),-5.692
+4TQA_kras,KRAS G13D,inativo (GDP),Não (KRAS isolado),-5.673
+8BLR_kras,KRAS G13D,"inativo (GDP), switch-I aberto",Não (KRAS isolado),-5.096

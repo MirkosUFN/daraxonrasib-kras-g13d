@@ -1,0 +1,121 @@
+sistema,mutacao,estado,cypa,mode,affinity,rmsd_lb,rmsd_ub
+9BG5,KRAS G13D,ativo (GppNHp),Sim (tri-complexo),1,-10.59,0.0,0.0
+9BG5,KRAS G13D,ativo (GppNHp),Sim (tri-complexo),2,-8.252,1.516,2.789
+9BG5,KRAS G13D,ativo (GppNHp),Sim (tri-complexo),3,-7.989,2.288,3.057
+9BG5,KRAS G13D,ativo (GppNHp),Sim (tri-complexo),4,-7.927,2.393,3.379
+9BG5,KRAS G13D,ativo (GppNHp),Sim (tri-complexo),5,-6.491,2.73,3.704
+9BG5,KRAS G13D,ativo (GppNHp),Sim (tri-complexo),6,-6.267,2.265,11.2
+9BG5,KRAS G13D,ativo (GppNHp),Sim (tri-complexo),7,-6.008,3.131,10.67
+9BG5,KRAS G13D,ativo (GppNHp),Sim (tri-complexo),8,-6.001,2.584,5.322
+9BG5,KRAS G13D,ativo (GppNHp),Sim (tri-complexo),9,-5.396,3.565,11.4
+9BG5,KRAS G13D,ativo (GppNHp),Sim (tri-complexo),10,-5.347,3.576,11.19
+9BG5,KRAS G13D,ativo (GppNHp),Sim (tri-complexo),11,-5.161,3.104,6.33
+9BG5,KRAS G13D,ativo (GppNHp),Sim (tri-complexo),12,-5.111,3.457,11.02
+9BG5,KRAS G13D,ativo (GppNHp),Sim (tri-complexo),13,-4.853,3.367,10.94
+9BG5,KRAS G13D,ativo (GppNHp),Sim (tri-complexo),14,-4.185,2.718,11.11
+9BG5,KRAS G13D,ativo (GppNHp),Sim (tri-complexo),15,-3.865,3.799,12.25
+9BG5,KRAS G13D,ativo (GppNHp),Sim (tri-complexo),16,-3.704,3.348,11.63
+9BG5,KRAS G13D,ativo (GppNHp),Sim (tri-complexo),17,-3.638,2.873,11.11
+9BG5,KRAS G13D,ativo (GppNHp),Sim (tri-complexo),18,-3.25,3.113,5.99
+9BG5,KRAS G13D,ativo (GppNHp),Sim (tri-complexo),19,-2.946,3.953,11.39
+9BG5,KRAS G13D,ativo (GppNHp),Sim (tri-complexo),20,-2.622,2.33,4.161
+9BG9,KRAS WT,ativo (GppNHp),Sim (tri-complexo),1,-10.03,0.0,0.0
+9BG9,KRAS WT,ativo (GppNHp),Sim (tri-complexo),2,-9.229,1.607,2.879
+9BG9,KRAS WT,ativo (GppNHp),Sim (tri-complexo),3,-7.747,2.628,3.561
+9BG9,KRAS WT,ativo (GppNHp),Sim (tri-complexo),4,-7.283,2.433,11.15
+9BG9,KRAS WT,ativo (GppNHp),Sim (tri-complexo),5,-7.192,1.777,2.3
+9BG9,KRAS WT,ativo (GppNHp),Sim (tri-complexo),6,-6.742,2.986,6.199
+9BG9,KRAS WT,ativo (GppNHp),Sim (tri-complexo),7,-6.307,3.622,11.47
+9BG9,KRAS WT,ativo (GppNHp),Sim (tri-complexo),8,-5.993,1.719,2.441
+9BG9,KRAS WT,ativo (GppNHp),Sim (tri-complexo),9,-5.91,3.22,11.39
+9BG9,KRAS WT,ativo (GppNHp),Sim (tri-complexo),10,-5.775,3.129,6.381
+9BG9,KRAS WT,ativo (GppNHp),Sim (tri-complexo),11,-5.714,2.63,5.415
+9BG9,KRAS WT,ativo (GppNHp),Sim (tri-complexo),12,-5.629,3.522,11.27
+9BG9,KRAS WT,ativo (GppNHp),Sim (tri-complexo),13,-5.062,3.005,6.442
+9BG9,KRAS WT,ativo (GppNHp),Sim (tri-complexo),14,-4.907,3.522,6.594
+9BG9,KRAS WT,ativo (GppNHp),Sim (tri-complexo),15,-4.879,6.2,9.941
+9BG9,KRAS WT,ativo (GppNHp),Sim (tri-complexo),16,-4.832,3.206,11.58
+9BG9,KRAS WT,ativo (GppNHp),Sim (tri-complexo),17,-4.049,2.757,11.1
+9BG9,KRAS WT,ativo (GppNHp),Sim (tri-complexo),18,-4.047,2.277,3.885
+9BG9,KRAS WT,ativo (GppNHp),Sim (tri-complexo),19,-3.756,2.762,5.765
+9BG9,KRAS WT,ativo (GppNHp),Sim (tri-complexo),20,-3.737,6.033,9.502
+4TQA_tri,KRAS G13D,inativo (GDP),Sim (CypA superposta),1,-7.436,0.0,0.0
+4TQA_tri,KRAS G13D,inativo (GDP),Sim (CypA superposta),2,-7.187,2.958,4.53
+4TQA_tri,KRAS G13D,inativo (GDP),Sim (CypA superposta),3,-7.172,1.842,3.446
+4TQA_tri,KRAS G13D,inativo (GDP),Sim (CypA superposta),4,-7.155,3.347,10.44
+4TQA_tri,KRAS G13D,inativo (GDP),Sim (CypA superposta),5,-7.153,2.674,9.499
+4TQA_tri,KRAS G13D,inativo (GDP),Sim (CypA superposta),6,-7.138,2.565,9.132
+4TQA_tri,KRAS G13D,inativo (GDP),Sim (CypA superposta),7,-7.106,3.16,9.989
+4TQA_tri,KRAS G13D,inativo (GDP),Sim (CypA superposta),8,-7.094,3.032,10.29
+4TQA_tri,KRAS G13D,inativo (GDP),Sim (CypA superposta),9,-6.977,2.514,9.932
+4TQA_tri,KRAS G13D,inativo (GDP),Sim (CypA superposta),10,-6.974,2.808,4.646
+4TQA_tri,KRAS G13D,inativo (GDP),Sim (CypA superposta),11,-6.972,2.366,4.943
+4TQA_tri,KRAS G13D,inativo (GDP),Sim (CypA superposta),12,-6.933,2.499,4.428
+4TQA_tri,KRAS G13D,inativo (GDP),Sim (CypA superposta),13,-6.853,2.631,5.232
+4TQA_tri,KRAS G13D,inativo (GDP),Sim (CypA superposta),14,-6.751,3.61,10.19
+4TQA_tri,KRAS G13D,inativo (GDP),Sim (CypA superposta),15,-6.699,3.114,10.3
+4TQA_tri,KRAS G13D,inativo (GDP),Sim (CypA superposta),16,-6.628,3.436,10.11
+4TQA_tri,KRAS G13D,inativo (GDP),Sim (CypA superposta),17,-6.585,2.905,4.569
+4TQA_tri,KRAS G13D,inativo (GDP),Sim (CypA superposta),18,-6.561,2.694,4.058
+4TQA_tri,KRAS G13D,inativo (GDP),Sim (CypA superposta),19,-6.404,2.84,4.489
+4TQA_tri,KRAS G13D,inativo (GDP),Sim (CypA superposta),20,-6.283,3.09,10.65
+8BLR_tri,KRAS G13D,"inativo (GDP), switch-I aberto",Sim (CypA superposta),1,-5.692,0.0,0.0
+8BLR_tri,KRAS G13D,"inativo (GDP), switch-I aberto",Sim (CypA superposta),2,-5.232,4.57,11.25
+8BLR_tri,KRAS G13D,"inativo (GDP), switch-I aberto",Sim (CypA superposta),3,-5.217,2.73,4.409
+8BLR_tri,KRAS G13D,"inativo (GDP), switch-I aberto",Sim (CypA superposta),4,-5.036,2.41,3.351
+8BLR_tri,KRAS G13D,"inativo (GDP), switch-I aberto",Sim (CypA superposta),5,-5.03,1.769,2.133
+8BLR_tri,KRAS G13D,"inativo (GDP), switch-I aberto",Sim (CypA superposta),6,-5.006,1.848,2.701
+8BLR_tri,KRAS G13D,"inativo (GDP), switch-I aberto",Sim (CypA superposta),7,-4.933,3.129,10.64
+8BLR_tri,KRAS G13D,"inativo (GDP), switch-I aberto",Sim (CypA superposta),8,-4.931,3.841,7.418
+8BLR_tri,KRAS G13D,"inativo (GDP), switch-I aberto",Sim (CypA superposta),9,-4.917,5.005,9.593
+8BLR_tri,KRAS G13D,"inativo (GDP), switch-I aberto",Sim (CypA superposta),10,-4.869,5.822,9.813
+8BLR_tri,KRAS G13D,"inativo (GDP), switch-I aberto",Sim (CypA superposta),11,-4.826,3.751,11.09
+8BLR_tri,KRAS G13D,"inativo (GDP), switch-I aberto",Sim (CypA superposta),12,-4.726,3.009,6.137
+8BLR_tri,KRAS G13D,"inativo (GDP), switch-I aberto",Sim (CypA superposta),13,-4.713,3.353,10.79
+8BLR_tri,KRAS G13D,"inativo (GDP), switch-I aberto",Sim (CypA superposta),14,-4.686,5.519,12.91
+8BLR_tri,KRAS G13D,"inativo (GDP), switch-I aberto",Sim (CypA superposta),15,-4.64,3.405,10.51
+8BLR_tri,KRAS G13D,"inativo (GDP), switch-I aberto",Sim (CypA superposta),16,-4.631,2.983,5.82
+8BLR_tri,KRAS G13D,"inativo (GDP), switch-I aberto",Sim (CypA superposta),17,-4.558,4.656,11.27
+8BLR_tri,KRAS G13D,"inativo (GDP), switch-I aberto",Sim (CypA superposta),18,-4.54,6.444,12.21
+8BLR_tri,KRAS G13D,"inativo (GDP), switch-I aberto",Sim (CypA superposta),19,-4.403,3.907,7.444
+8BLR_tri,KRAS G13D,"inativo (GDP), switch-I aberto",Sim (CypA superposta),20,-4.344,3.988,7.271
+4TQA_kras,KRAS G13D,inativo (GDP),Não (KRAS isolado),1,-5.673,0.0,0.0
+4TQA_kras,KRAS G13D,inativo (GDP),Não (KRAS isolado),2,-5.208,8.784,14.87
+4TQA_kras,KRAS G13D,inativo (GDP),Não (KRAS isolado),3,-5.198,8.56,14.31
+4TQA_kras,KRAS G13D,inativo (GDP),Não (KRAS isolado),4,-4.82,8.332,13.92
+4TQA_kras,KRAS G13D,inativo (GDP),Não (KRAS isolado),5,-4.686,8.022,13.24
+4TQA_kras,KRAS G13D,inativo (GDP),Não (KRAS isolado),6,-4.643,7.722,12.07
+4TQA_kras,KRAS G13D,inativo (GDP),Não (KRAS isolado),7,-4.637,1.702,3.556
+4TQA_kras,KRAS G13D,inativo (GDP),Não (KRAS isolado),8,-4.635,8.172,14.02
+4TQA_kras,KRAS G13D,inativo (GDP),Não (KRAS isolado),9,-4.514,13.72,16.51
+4TQA_kras,KRAS G13D,inativo (GDP),Não (KRAS isolado),10,-4.464,7.678,12.64
+4TQA_kras,KRAS G13D,inativo (GDP),Não (KRAS isolado),11,-4.394,9.574,14.91
+4TQA_kras,KRAS G13D,inativo (GDP),Não (KRAS isolado),12,-4.388,8.65,15.1
+4TQA_kras,KRAS G13D,inativo (GDP),Não (KRAS isolado),13,-4.367,4.495,10.59
+4TQA_kras,KRAS G13D,inativo (GDP),Não (KRAS isolado),14,-4.358,8.213,12.19
+4TQA_kras,KRAS G13D,inativo (GDP),Não (KRAS isolado),15,-4.354,11.53,15.92
+4TQA_kras,KRAS G13D,inativo (GDP),Não (KRAS isolado),16,-4.335,2.254,4.166
+4TQA_kras,KRAS G13D,inativo (GDP),Não (KRAS isolado),17,-4.268,10.1,16.07
+4TQA_kras,KRAS G13D,inativo (GDP),Não (KRAS isolado),18,-4.267,8.359,14.67
+4TQA_kras,KRAS G13D,inativo (GDP),Não (KRAS isolado),19,-4.22,7.523,11.62
+4TQA_kras,KRAS G13D,inativo (GDP),Não (KRAS isolado),20,-4.14,1.858,2.533
+8BLR_kras,KRAS G13D,"inativo (GDP), switch-I aberto",Não (KRAS isolado),1,-5.096,0.0,0.0
+8BLR_kras,KRAS G13D,"inativo (GDP), switch-I aberto",Não (KRAS isolado),2,-4.839,5.524,11.19
+8BLR_kras,KRAS G13D,"inativo (GDP), switch-I aberto",Não (KRAS isolado),3,-4.831,4.115,7.761
+8BLR_kras,KRAS G13D,"inativo (GDP), switch-I aberto",Não (KRAS isolado),4,-4.738,4.396,8.64
+8BLR_kras,KRAS G13D,"inativo (GDP), switch-I aberto",Não (KRAS isolado),5,-4.715,4.036,9.55
+8BLR_kras,KRAS G13D,"inativo (GDP), switch-I aberto",Não (KRAS isolado),6,-4.689,3.359,10.9
+8BLR_kras,KRAS G13D,"inativo (GDP), switch-I aberto",Não (KRAS isolado),7,-4.689,3.54,6.281
+8BLR_kras,KRAS G13D,"inativo (GDP), switch-I aberto",Não (KRAS isolado),8,-4.68,4.199,8.722
+8BLR_kras,KRAS G13D,"inativo (GDP), switch-I aberto",Não (KRAS isolado),9,-4.617,3.362,11.01
+8BLR_kras,KRAS G13D,"inativo (GDP), switch-I aberto",Não (KRAS isolado),10,-4.61,5.617,9.831
+8BLR_kras,KRAS G13D,"inativo (GDP), switch-I aberto",Não (KRAS isolado),11,-4.604,3.829,9.742
+8BLR_kras,KRAS G13D,"inativo (GDP), switch-I aberto",Não (KRAS isolado),12,-4.591,4.208,11.35
+8BLR_kras,KRAS G13D,"inativo (GDP), switch-I aberto",Não (KRAS isolado),13,-4.586,4.427,9.393
+8BLR_kras,KRAS G13D,"inativo (GDP), switch-I aberto",Não (KRAS isolado),14,-4.558,5.499,9.774
+8BLR_kras,KRAS G13D,"inativo (GDP), switch-I aberto",Não (KRAS isolado),15,-4.53,3.135,5.912
+8BLR_kras,KRAS G13D,"inativo (GDP), switch-I aberto",Não (KRAS isolado),16,-4.492,3.395,9.849
+8BLR_kras,KRAS G13D,"inativo (GDP), switch-I aberto",Não (KRAS isolado),17,-4.48,3.306,10.15
+8BLR_kras,KRAS G13D,"inativo (GDP), switch-I aberto",Não (KRAS isolado),18,-4.464,10.42,15.34
+8BLR_kras,KRAS G13D,"inativo (GDP), switch-I aberto",Não (KRAS isolado),19,-4.464,5.368,8.248
+8BLR_kras,KRAS G13D,"inativo (GDP), switch-I aberto",Não (KRAS isolado),20,-4.453,5.517,11.24
