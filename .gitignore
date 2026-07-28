@@ -1,0 +1,16 @@
+# GROMACS run artifacts (grandes / regeneráveis)
+*.trr
+*.edr
+*.cpt
+*.log
+step*.pdb
+\#*\#
+*.tpr
+# arquivos de solvatação muito grandes (regeneráveis a partir do tar)
+solv.gro
+solv_ions.gro
+box.gro
+# temporários
+*.tmp
+__pycache__/
+.ipynb_checkpoints/
