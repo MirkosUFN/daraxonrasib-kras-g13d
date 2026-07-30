@@ -69,6 +69,28 @@ fármaco + GppNHp + Mg):
 O sistema pronto para rodar está empacotado em
 `05_gromacs/9BG5_gromacs_system.tar.gz`.
 
+## Controle KRAS selvagem (9BG9) — validação mecanística
+
+Para testar se a estabilidade do tri-complexo depende da mutação, montei o
+**mesmo tri-complexo com KRAS selvagem (WT, Gly13)** a partir do cristal 9BG9,
+usando **protocolo idêntico** ao do mutante (mesmo campo de força, mesma
+parametrização de ligantes, mesma caixa/íons, mesmos MDPs, produção de 2 ns).
+A comparação controlada mostra:
+
+| Métrica | G13D (9BG5) | WT (9BG9) | unidade |
+|---|---|---|---|
+| RMSD backbone (média 2ª metade) | 4.21 | **1.76** | Å |
+| RMSF Cα (média) | 3.82 | **0.95** | Å |
+| RMSF Cα (máx) | 7.05 | **3.09** | Å |
+| Fármaco engaja KRAS | 100 | 100 | % dos frames |
+| Fármaco engaja CypA | 100 | 100 | % dos frames |
+
+O tri-complexo **WT é substancialmente mais estável** sob dinâmica, enquanto o
+fármaco mantém contato simultâneo com KRAS e CypA em **100 % dos frames em
+ambos os sistemas** — confirmando que a arquitetura de cola molecular
+(RAS(ON)·fármaco·CypA) se forma independentemente do status G13. Arquivos em
+`07_controle_9BG9/` (sistema, trajetória, figuras e tabela comparativa).
+
 ## Estrutura do repositório
 
 ```
@@ -78,6 +100,7 @@ O sistema pronto para rodar está empacotado em
 04_docking/       scores (CSV), logs Vina, poses (PDBQT)
 05_gromacs/       sistema MD pronto (tar), MDPs, complexo de partida
 06_analise/       fingerprint de interações (CSV)
+07_controle_9BG9/ controle KRAS WT: sistema+trajetória MD, figuras, tabela comparativa
 figuras/          figuras comparativas de afinidade/contatos e mapa de resíduos
 ```
 

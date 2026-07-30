@@ -1,0 +1,10 @@
+metrica,9BG5_G13D,9BG9_WT,unidade
+rmsd_backbone_media_2a_metade,4.21,1.76,A
+rmsf_ca_media,3.82,0.95,A
+rmsf_ca_max,7.05,3.09,A
+drug_dmin_kras_media,2.13,2.12,A
+drug_dmin_cypa_media,1.81,1.86,A
+drug_contatos_kras_media,312.3,286.1,contatos<4A
+drug_contatos_cypa_media,465.4,492.8,contatos<4A
+frac_frames_contato_kras,100,100,%
+frac_frames_contato_cypa,100,100,%

@@ -1,0 +1,13 @@
+metrica,valor,unidade,observacao
+duracao_producao,2.0,ns,"dt 2 fs, 1e6 passos"
+n_frames_analise,201,frames,salvos a cada 10 ps
+rmsd_backbone_media_2a_metade,1.76,A,complexo KRAS+CypA (2 cadeias)
+rmsf_ca_media,0.95,A,
+rmsf_ca_max,3.09,A,loops/terminais
+drug_dmin_kras_media,2.12,A,imagem minima
+drug_dmin_cypa_media,1.86,A,imagem minima
+drug_contatos_kras_media,286.1,contatos<4A,
+drug_contatos_cypa_media,492.8,contatos<4A,
+frac_frames_contato_kras,100,%,fármaco engaja KRAS
+frac_frames_contato_cypa,100,%,fármaco engaja CypA
+frac_frames_droga_no_bolso,100,%,dmin<4.5A no complexo
