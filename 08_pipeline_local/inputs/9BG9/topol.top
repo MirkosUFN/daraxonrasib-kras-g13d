@@ -1,0 +1,39 @@
+; KRAS_WT-9BG9 — KRAS WT + CypA + daraxonrasib, GppNHp-loaded (RAS-ON). Crystallographic tri-complex (1.58 A).
+; Protein: AMBER99SB-ILDN | Water: TIP3P | Ligand & nucleotide: GAFF2/AM1-BCC (ACPYPE)
+#include "amber99sb-ildn.ff/forcefield.itp"
+
+; ---- GAFF2 atom types for DRG / GNP ----
+#include "../../toppar/ligand_atomtypes.itp"
+
+; ---- protein chains ----
+#include "topol_Protein_chain_A.itp"
+#include "topol_Protein_chain_B.itp"
+
+; ---- daraxonrasib (DRG) and nucleotide (GNP) ----
+#include "../../toppar/DRG.itp"
+#ifdef POSRES_LIG
+#include "posre_DRG.itp"
+#endif
+#include "../../toppar/GNP.itp"
+#ifdef POSRES_LIG
+#include "posre_GNP.itp"
+#endif
+
+#include "amber99sb-ildn.ff/tip3p.itp"
+#ifdef POSRES_WATER
+[ position_restraints ]
+   1    1       1000       1000       1000
+#endif
+
+#include "amber99sb-ildn.ff/ions.itp"
+
+[ system ]
+KRAS_WT-9BG9 in water
+
+[ molecules ]
+; Compound          #mols
+Protein_chain_A   1
+Protein_chain_B   1
+DRG               1
+GNP               1
+MG                1
