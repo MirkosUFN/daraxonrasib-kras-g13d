@@ -3,17 +3,33 @@
 # run_all.sh — full pipeline for every system, then the comparative analysis
 #
 #   bash scripts/run_all.sh [NS] [SYSTEMS...]
-#     NS       production length per system in ns (default 5)
+#     NS       production length per system in ns (default 200)
 #     SYSTEMS  subset to run (default: 9BG5 9BG9 4TQA 8BLR 4OBE)
 #
-#   # 10 ns each on a GPU machine:
-#   GPU=1 bash scripts/run_all.sh 10
-#   # only the two RAS-ON systems, 5 ns:
-#   bash scripts/run_all.sh 5 9BG5 9BG9
+#   # all five systems, 200 ns each (CPU: ~28 days — see MAXH below):
+#   bash scripts/run_all.sh
+#   # 200 ns each on a GPU machine:
+#   GPU=1 bash scripts/run_all.sh 200
+#   # only the two RAS-ON systems:
+#   bash scripts/run_all.sh 200 9BG5 9BG9
+#
+# For a 200 ns campaign, running the systems SEQUENTIALLY through this script is
+# rarely what you want: one system finishing after four weeks gives you nothing
+# to look at in the meantime. Prefer one long-lived process per system, each
+# with its own thread slice, so results accrue in parallel:
+#
+#   for S in 9BG5 9BG9 4TQA 8BLR 4OBE; do
+#       NT=4 nohup bash scripts/02_run_md.sh $S 200 > runs/$S/run.log 2>&1 &
+#   done
+#
+# (NT=4 x 5 systems = 20 of 24 cores. Do not oversubscribe: total NT across all
+# concurrent mdrun processes must stay at or below your core count.)
+# Then run the analysis whenever you want a snapshot — it works on whatever
+# systems have finished, and 03_postprocess.sh can be run on a partial md.xtc.
 # =============================================================================
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-NS="${1:-5}"; shift || true
+NS="${1:-200}"; shift || true
 SYSTEMS=("$@"); [[ ${#SYSTEMS[@]} -eq 0 ]] && SYSTEMS=(9BG5 9BG9 4TQA 8BLR 4OBE)
 
 echo "=================================================================="

@@ -39,7 +39,10 @@
 #   md_clean.xtc            solute-only trajectory, PBC-corrected and fitted
 #   complex.tpr             solute-only run input (matches md_clean.xtc)
 #   frame0.pdb              first frame of the solute (static picture)
-#   trajectory_movie.pdb    multi-MODEL pdb (every 5th frame) for PyMOL/VMD
+#   trajectory_movie.pdb    multi-MODEL pdb, ~MOVIE_FRAMES models, for PyMOL/VMD
+#                           (env MOVIE_FRAMES, default 200; the stride is derived
+#                            from the trajectory length so a 200 ns run gives a
+#                            ~200-model file instead of a multi-GB one)
 #   pbc_check.txt           per-chain Rg, before vs. after — sanity check
 # =============================================================================
 set -euo pipefail
@@ -63,7 +66,17 @@ echo Protein_LIG | $GMX convert-tpr -s md.tpr -n index.ndx -o complex.tpr
 
 echo "[$SYS] writing frame0.pdb and trajectory_movie.pdb"
 $GMX trjconv -s complex.tpr -f md_clean.xtc -o frame0.pdb -dump 0 -conect <<< "System"
-$GMX trjconv -s complex.tpr -f md_clean.xtc -o trajectory_movie.pdb -skip 5 -conect <<< "System"
+
+# a multi-MODEL PDB is ~2 MB per 1000 solute atoms per 100 models, so the stride
+# is chosen from the actual frame count instead of being hard-coded
+NFR=$($GMX check -f md_clean.xtc 2>&1 | awk '/^Step/ {print $2}' | tail -1)
+SKIP=$(python3 -c "
+import sys
+n = int(sys.argv[1]) if sys.argv[1].isdigit() else 0
+want = int('${MOVIE_FRAMES:-200}')
+print(max(1, round(n/want)) if n > want else 1)" "${NFR:-0}")
+echo "[$SYS]   $NFR frames in md_clean.xtc -> movie stride $SKIP"
+$GMX trjconv -s complex.tpr -f md_clean.xtc -o trajectory_movie.pdb -skip "$SKIP" -conect <<< "System"
 rm -f .p1.xtc .p2.xtc \#*
 
 # ---- guard: per-chain radius of gyration, pre-MD vs. post-correction --------

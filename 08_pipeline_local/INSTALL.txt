@@ -1,0 +1,52 @@
+daraxonrasib / KRAS tri-complex — 200 ns MD package
+====================================================
+Read README.md for the full documentation. This file is the 60-second version.
+
+REQUIREMENTS
+  gmx (GROMACS >= 2021)      gmx --version
+  python3 with MDAnalysis, numpy, matplotlib, pandas
+      conda create -n mdanalysis -c conda-forge mdanalysis matplotlib pandas
+      conda activate mdanalysis
+  ~40 GB free disk for the five 200 ns runs
+
+IF YOUR gmx IS NOT ON PATH
+  export GMX=/usr/bin/gmx        (or wherever `which gmx` points)
+
+1) SMOKE TEST — 2 minutes, do this first
+     cd kras_md_pipeline
+     NVT_PS=10 NPT_PS=10 bash scripts/01_build.sh  4TQA
+     NVT_PS=10 NPT_PS=10 bash scripts/02_run_md.sh 4TQA 0.02
+     python3 scripts/04_analysis.py --root . --systems 4TQA --equil-frac 0.0
+     rm -rf runs/4TQA analysis          # clear the test
+     mkdir -p runs/4TQA
+
+2) BUILD ALL FIVE SYSTEMS — ~5 minutes
+     for S in 9BG5 9BG9 4TQA 8BLR 4OBE; do bash scripts/01_build.sh $S; done
+
+3) PRODUCTION — 200 ns each
+   CPU, all five in parallel (24 cores, ~10-12 days, all finish together):
+     for S in 9BG5 9BG9 4TQA 8BLR 4OBE; do
+         NT=4 nohup bash scripts/02_run_md.sh $S 200 > runs/$S/run.log 2>&1 &
+     done
+
+   GPU (RTX A4000), one at a time, ~1 day each:
+     for S in 9BG5 9BG9 4TQA 8BLR 4OBE; do GPU=1 bash scripts/02_run_md.sh $S 200; done
+
+   In sessions of 12 h (re-issue the same line to continue from md.cpt):
+     MAXH=12 bash scripts/02_run_md.sh 9BG5 200
+
+4) LOOK AT IT WHILE IT RUNS — safe at any time
+     bash scripts/05_snapshot.sh
+
+5) FINAL ANALYSIS
+     python3 scripts/04_analysis.py --root . --systems 9BG5 9BG9 4TQA 8BLR 4OBE
+   -> analysis/<SYS>/            per-system figures + CSVs
+   -> analysis/00_comparison/    comparison figure + summary table
+
+ALWAYS READ runs/<SYS>/pbc_check.txt BEFORE TRUSTING A DISTANCE.
+It compares per-chain radius of gyration before and after the PBC treatment;
+a WARNING there means a molecule is split across the periodic box and every
+distance involving it is meaningless. README section 7 explains the fix.
+
+Re-running any command is safe: finished stages are skipped, an unfinished
+production resumes from its checkpoint.

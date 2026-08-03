@@ -25,6 +25,7 @@
 import argparse, warnings
 from pathlib import Path
 
+import csv
 import numpy as np
 import matplotlib
 matplotlib.use("Agg")
@@ -123,7 +124,8 @@ def protein_chains(u):
         cut = min(169, len(ids) - 1)
     return res[:cut].atoms, res[cut:].atoms
 
-def analyse(sysname, root, equil_frac, stride):  # noqa: C901
+def analyse(sysname, root, equil_frac, stride, rmsf_max_frames=2000,
+            n_blocks=5):  # noqa: C901
     run = root / "runs" / sysname
     tpr, xtc = run / "complex.tpr", run / "md_clean.xtc"
     if not (tpr.exists() and xtc.exists()):
@@ -201,8 +203,21 @@ def analyse(sysname, root, equil_frac, stride):  # noqa: C901
         out[k] = np.array(v) if v else None
 
     # ---- RMSF on the equilibrated part, computed on an aligned copy
+    #
+    # RMSF needs the trajectory in memory to superpose it, which costs
+    # n_frames * n_atoms * 12 bytes. A 200 ns run at 20 ps/frame is 10,000
+    # frames, so the equilibrated half is subsampled to at most
+    # rmsf_max_frames before the transfer — RMSF is an average over frames and
+    # is insensitive to the sampling interval, whereas an unbounded transfer
+    # would need several GB.
     n_eq = int(len(t_ns) * equil_frac)
     v = mda.Universe(str(tpr), str(xtc))
+    n_avail = len(v.trajectory) - n_eq
+    rstep = max(1, -(-n_avail // rmsf_max_frames)) if n_avail > 0 else 1
+    v.transfer_to_memory(start=n_eq, step=rstep)
+    if rstep > 1:
+        print(f"  [{sysname}] RMSF: {n_avail} equilibrated frames subsampled "
+              f"every {rstep} -> {len(v.trajectory)} frames in memory")
     align.AlignTraj(v, v, select=kras_bb, in_memory=True).run()
     vk, vc = protein_chains(v)
     for tag, grp in (("kras", vk), ("cypa", vc)):
@@ -210,9 +225,10 @@ def analyse(sysname, root, equil_frac, stride):  # noqa: C901
         if not ca.n_atoms:
             out[f"rmsf_{tag}"] = out[f"resid_{tag}"] = None
             continue
-        r = rms.RMSF(ca).run(start=n_eq)
+        r = rms.RMSF(ca).run()          # v already starts at the equilibration point
         out[f"rmsf_{tag}"] = r.results.rmsf
         out[f"resid_{tag}"] = to_native(ca.resids)
+    del v
     out["n_eq"] = n_eq
 
     def mstd(a):
@@ -231,6 +247,36 @@ def analyse(sysname, root, equil_frac, stride):  # noqa: C901
         out["engage_cypa"] = float(np.mean(out["dmin_cypa"][n_eq:] < ENGAGE_CUT))
     else:
         out["engage_kras"] = out["engage_cypa"] = np.nan
+
+    # ---- block averages: the convergence test that only a long run allows
+    # Splitting the equilibrated part into independent blocks and comparing them
+    # is what distinguishes "the metric has converged" from "the metric happened
+    # to sit there during the window I looked at". On a 5 ns run the blocks are
+    # too short to be independent; at 200 ns they are informative.
+    nb = min(n_blocks, max(1, len(t_ns) - n_eq))
+    edges = np.linspace(n_eq, len(t_ns), nb + 1).astype(int)
+    blocks = []
+    for i in range(nb):
+        s, e = edges[i], edges[i + 1]
+        if e <= s:
+            continue
+        b = {"block": i + 1, "t_start_ns": float(t_ns[s]), "t_end_ns": float(t_ns[e - 1])}
+        b["rmsd_kras"] = float(np.mean(out["rmsd_kras"][s:e]))
+        b["rmsd_cypa"] = float(np.mean(out["rmsd_cypa"][s:e]))
+        b["rg"] = float(np.mean(out["rg"][s:e]))
+        if out["dmin_kras"] is not None:
+            b["dmin_kras"] = float(np.mean(out["dmin_kras"][s:e]))
+            b["dmin_cypa"] = float(np.mean(out["dmin_cypa"][s:e]))
+            b["engage_kras"] = float(np.mean(out["dmin_kras"][s:e] < ENGAGE_CUT))
+            b["engage_cypa"] = float(np.mean(out["dmin_cypa"][s:e] < ENGAGE_CUT))
+        blocks.append(b)
+    out["blocks"] = blocks
+    # block-to-block spread of the headline metric = an honest uncertainty
+    if len(blocks) > 1:
+        out["rmsd_kras_block_sd"] = float(np.std([b["rmsd_kras"] for b in blocks]))
+        out["engage_kras_block_sd"] = float(np.std([b.get("engage_kras", np.nan) for b in blocks]))
+    else:
+        out["rmsd_kras_block_sd"] = out["engage_kras_block_sd"] = np.nan
     print(f"  [{sysname}] {out['n_frames']} frames | KRAS RMSD "
           f"{out['stats']['rmsd_kras'][0]:.2f} A | drug-KRAS {out['stats']['dmin_kras'][0]:.2f} A "
           f"| engaged {out['engage_kras']*100:.0f}% KRAS / {out['engage_cypa']*100:.0f}% CypA")
@@ -342,6 +388,103 @@ def csv_contacts(m, outdir):
                             f"{o['freq'][i]*100:.1f}"])
     return p
 
+def figure_convergence(m, outdir):
+    """Has the run converged? Cumulative averages + independent block averages.
+
+    Only meaningful for long trajectories: with a few hundred ps the blocks are
+    correlated and a flat cumulative mean says nothing.
+    """
+    nm = m["name"]
+    t, n_eq = m["t_ns"], m["n_eq"]
+    blocks = m.get("blocks") or []
+    fig, axs = plt.subplots(2, 2, figsize=(11, 7.5))
+    fig.suptitle(f"{nm} — convergence diagnostics", y=0.98)
+
+    # (a) cumulative (running) mean of KRAS RMSD: flattens when converged
+    ax = axs[0, 0]
+    for key, col, lab in (("rmsd_kras", "#1f77b4", "KRAS backbone"),
+                          ("rmsd_cypa", "#d62728", "CypA backbone")):
+        y = m.get(key)
+        if y is None:
+            continue
+        cum = np.cumsum(y) / np.arange(1, len(y) + 1)
+        ax.plot(t, cum, color=col, lw=1.4, label=lab)
+    ax.axvline(t[n_eq] if n_eq < len(t) else t[-1], color=GREY, ls=":", lw=1.0)
+    ax.set_xlabel("Time (ns)"); ax.set_ylabel("Cumulative mean RMSD (Å)")
+    ax.set_title("Running mean RMSD (flat = converged)")
+    ax.legend(frameon=False, fontsize=8)
+    panel(ax, "a")
+
+    # (b) per-block mean RMSD with the block spread as the error bar
+    ax = axs[0, 1]
+    if blocks:
+        xb = [b["block"] for b in blocks]
+        ax.plot(xb, [b["rmsd_kras"] for b in blocks], "o-", color="#1f77b4",
+                lw=1.4, ms=5, label="KRAS")
+        ax.plot(xb, [b["rmsd_cypa"] for b in blocks], "s-", color="#d62728",
+                lw=1.4, ms=5, label="CypA")
+        ax.set_xticks(xb)
+        ax.set_xticklabels([f"{b['t_start_ns']:.0f}–{b['t_end_ns']:.0f}" for b in blocks],
+                           rotation=30, ha="right", fontsize=7)
+        ax.legend(frameon=False, fontsize=8)
+    ax.set_xlabel("Block (ns)"); ax.set_ylabel("Block mean RMSD (Å)")
+    ax.set_title("Independent block averages")
+    panel(ax, "b")
+
+    # (c) engagement per block — the mechanistic readout, block by block
+    ax = axs[1, 0]
+    if blocks and "engage_kras" in blocks[0]:
+        xb = np.arange(len(blocks)); w = 0.38
+        ax.bar(xb - w / 2, [b["engage_kras"] * 100 for b in blocks], w,
+               color="#1f77b4", label="drug–KRAS")
+        ax.bar(xb + w / 2, [b["engage_cypa"] * 100 for b in blocks], w,
+               color="#d62728", label="drug–CypA")
+        ax.set_xticks(xb)
+        ax.set_xticklabels([f"{b['t_start_ns']:.0f}–{b['t_end_ns']:.0f}" for b in blocks],
+                           rotation=30, ha="right", fontsize=7)
+        ax.set_ylim(0, 128)
+        ax.legend(frameon=False, fontsize=8, loc="upper center", ncol=2)
+    ax.set_xlabel("Block (ns)")
+    ax.set_ylabel(f"Frames with contact < {ENGAGE_CUT} Å (%)")
+    ax.set_title("Tri-complex engagement per block")
+    panel(ax, "c")
+
+    # (d) radius of gyration — a slow global coordinate; drift here means the
+    #     run is still relaxing even if RMSD looks flat
+    ax = axs[1, 1]
+    ax.plot(t, m["rg"], color=GREY, lw=0.8)
+    if len(t) > 50:
+        w = max(5, len(t) // 50)
+        k = np.ones(w) / w
+        ax.plot(t[w - 1:], np.convolve(m["rg"], k, mode="valid"),
+                color="#1f77b4", lw=1.6, label=f"{w}-frame mean")
+        ax.legend(frameon=False, fontsize=8)
+    ax.set_xlabel("Time (ns)"); ax.set_ylabel("Radius of gyration (nm)")
+    ax.set_title("Complex compactness over time")
+    panel(ax, "d")
+
+    fig.tight_layout(rect=[0, 0, 1, 0.95])
+    f = outdir / f"convergence_{nm}.png"
+    fig.savefig(f, dpi=200); plt.close(fig)
+    return f
+
+
+def csv_blocks(m, outdir):
+    """Per-block table — the numbers behind the convergence figure."""
+    blocks = m.get("blocks") or []
+    if not blocks:
+        return None
+    cols = ["block", "t_start_ns", "t_end_ns", "rmsd_kras", "rmsd_cypa", "rg",
+            "dmin_kras", "dmin_cypa", "engage_kras", "engage_cypa"]
+    f = outdir / f"blocks_{m['name']}.csv"
+    with open(f, "w", newline="") as fh:
+        w = csv.writer(fh); w.writerow(cols)
+        for b in blocks:
+            w.writerow([f"{b[c]:.3f}" if isinstance(b.get(c), float) else b.get(c, "")
+                        for c in cols])
+    return f
+
+
 def csv_system(m, outdir):
     import csv
     p = outdir / f"timeseries_{m['name']}.csv"
@@ -427,7 +570,9 @@ def csv_summary(mets, outdir):
                     "rmsf_kras_mean_A", "rmsf_kras_max_A",
                     "rg_mean_A", "dmin_drug_kras_mean_A", "dmin_drug_cypa_mean_A",
                     "contacts_kras_mean", "contacts_cypa_mean",
-                    "engaged_kras_pct", "engaged_cypa_pct"])
+                    "engaged_kras_pct", "engaged_cypa_pct",
+                    "rmsd_kras_block_sd_A", "engaged_kras_block_sd_pct",
+                    "n_blocks", "sim_time_ns"])
         for m in mets:
             s = m["stats"]; meta = SYS_META.get(m["name"], {})
             w.writerow([m["name"], meta.get("label", ""), meta.get("state", ""), m["n_frames"],
@@ -436,7 +581,10 @@ def csv_summary(mets, outdir):
                         f"{s['rmsf_kras'][0]:.3f}", f"{s['rmsf_kras'][1]:.3f}",
                         f"{s['rg'][0]:.3f}", f"{s['dmin_kras'][0]:.3f}", f"{s['dmin_cypa'][0]:.3f}",
                         f"{s['nc_kras'][0]:.1f}", f"{s['nc_cypa'][0]:.1f}",
-                        f"{m['engage_kras']*100:.1f}", f"{m['engage_cypa']*100:.1f}"])
+                        f"{m['engage_kras']*100:.1f}", f"{m['engage_cypa']*100:.1f}",
+                        f"{m.get('rmsd_kras_block_sd', float('nan')):.3f}",
+                        f"{m.get('engage_kras_block_sd', float('nan'))*100:.1f}",
+                        len(m.get("blocks") or []), f"{m['t_ns'][-1]:.1f}"])
     return p
 
 def main():
@@ -445,7 +593,14 @@ def main():
     ap.add_argument("--systems", nargs="*", default=["9BG5", "9BG9", "4TQA", "8BLR", "4OBE"])
     ap.add_argument("--equil-frac", type=float, default=0.5,
                     help="fraction of the trajectory treated as equilibration (default 0.5)")
-    ap.add_argument("--stride", type=int, default=1)
+    ap.add_argument("--stride", type=int, default=1,
+                    help="read every Nth frame of the trajectory (default 1)")
+    ap.add_argument("--n-blocks", type=int, default=5,
+                    help="number of independent blocks for the convergence test "
+                         "(default 5; use 1 to disable)")
+    ap.add_argument("--rmsf-max-frames", type=int, default=2000,
+                    help="cap on frames held in memory for the RMSF superposition "
+                         "(default 2000; raise it only if you have the RAM)")
     a = ap.parse_args()
     style()
     root = a.root.resolve()
@@ -453,11 +608,13 @@ def main():
     mets = []
     print("Analysing trajectories:")
     for s in a.systems:
-        m = analyse(s, root, a.equil_frac, a.stride)
+        m = analyse(s, root, a.equil_frac, a.stride, a.rmsf_max_frames,
+                    a.n_blocks)
         if m is None: continue
         d = outroot / s; d.mkdir(parents=True, exist_ok=True)
         figure_system(m, d); csv_system(m, d)
         figure_contacts(m, d); csv_contacts(m, d)
+        figure_convergence(m, d); csv_blocks(m, d)
         mets.append(m)
     if not mets:
         print("No trajectories found — run scripts/run_all.sh first."); return

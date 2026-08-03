@@ -37,11 +37,15 @@ echo SOL | $GMX genion -s ions.tpr -o solv_ions.gro -p topol.top \
 echo "[$SYS] 4/4  index groups"
 python3 "$ROOT/scripts/make_index.py" solv_ions.gro topol.top index.ndx | tee -a build.log
 
-# verify the final topology is charge-neutral and grompp-clean
+# verify the final topology is charge-neutral and grompp-clean.
+# NOTE: this must inspect its OWN log, not build.log — build.log also contains
+# the pre-genion grompp from step 3, which legitimately reports the uncompensated
+# protein/nucleotide charge and would make this check fire on every system.
 $GMX grompp -f "$ROOT/mdp/em.mdp" -c solv_ions.gro -p topol.top -n index.ndx \
-        -o .check.tpr -maxwarn 2 >> build.log 2>&1
-if grep -q "non-zero total charge" build.log; then
-    echo "[$SYS] WARNING: residual net charge — inspect build.log"
+        -o .check.tpr -maxwarn 2 > check.log 2>&1
+cat check.log >> build.log
+if grep -q "non-zero total charge" check.log; then
+    echo "[$SYS] WARNING: residual net charge — inspect check.log"
 fi
 rm -f .check.tpr ions.tpr solv.gro box.gro \#*
 
