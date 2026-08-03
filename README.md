@@ -91,6 +91,16 @@ ambos os sistemas** — confirmando que a arquitetura de cola molecular
 (RAS(ON)·fármaco·CypA) se forma independentemente do status G13. Arquivos em
 `07_controle_9BG9/` (sistema, trajetória, figuras e tabela comparativa).
 
+## Rodar a dinâmica localmente
+
+`08_pipeline_local/` é um pacote autocontido para reproduzir a MD dos **cinco
+sistemas** (9BG5, 9BG9, 4TQA, 8BLR, 4OBE) em qualquer máquina com GROMACS >= 2021:
+topologias GAFF2 já geradas (daraxonrasib, GppNHp, GDP), arquivos .mdp, scripts de
+build/MD/tratamento de PBC/análise e figuras de exemplo. Veja
+`08_pipeline_local/README.md`. O nucleotídeo e o Mg2+ são preservados em todos os
+sistemas — removê-los (p.ex. com `grep -v HETATM`) destrói o P-loop e as regiões
+switch.
+
 ## Estrutura do repositório
 
 ```
@@ -101,6 +111,7 @@ ambos os sistemas** — confirmando que a arquitetura de cola molecular
 05_gromacs/       sistema MD pronto (tar), MDPs, complexo de partida
 06_analise/       fingerprint de interações (CSV)
 07_controle_9BG9/ controle KRAS WT: sistema+trajetória MD, figuras, tabela comparativa
+08_pipeline_local/  pipeline GROMACS completo p/ rodar localmente os 5 sistemas (README próprio)
 figuras/          figuras comparativas de afinidade/contatos e mapa de resíduos
 ```
 
